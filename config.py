@@ -8,9 +8,9 @@ DEBUG = True
 
 # Connect to the database
 # clod database elephantsql.com
-SQLALCHEMY_DATABASE_URI = 'postgres://wbmwctrt:DQiMTH5iHLL6JZqqdEcdzPkf1aG7WYAv@ruby.db.elephantsql.com:5432/wbmwctrt'
+# SQLALCHEMY_DATABASE_URI = 'postgres://wbmwctrt:DQiMTH5iHLL6JZqqdEcdzPkf1aG7WYAv@ruby.db.elephantsql.com:5432/wbmwctrt'
 
 
 # TODO IMPLEMENT DATABASE URL
-# SQLALCHEMY_DATABASE_URI = 'postgres://awotefalharbi@localhost:5432/fyyur1'
-# SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_DATABASE_URI = 'postgres://awotefalharbi@localhost:5432/fyyur'
+SQLALCHEMY_TRACK_MODIFICATIONS = False

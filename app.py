@@ -11,79 +11,22 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
+from models import *
+
 
 #----------App Config---------- #
 
 app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # TODO: connect to a local postgresql database
 migrate = Migrate(app, db)
 
 #----------Models---------- #
-
-class Venue(db.Model):
-    __tablename__ = 'Venue'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    address = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
-
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
-    website = db.Column(db.String(250))
-    seeking_talent = db.Column(db.Boolean, default=False)
-    seeking_description = db.Column(db.String(120))
-    genres = db.Column(db.ARRAY(db.String))
-    shows = db.relationship('Show', backref='Venue', lazy=True)
-
-    def __repr__(self):
-        return f'<Venue{self.id} name: {self.name} city:{self.city} state:{self.state} address:{self.address} phone:{self.phone}\
-         image_link: {self.image_link} facebook_link: {self.facebook_link} website: {self.website}\
-         seeking_talent: {self.seeking_talent} seeking_description:{self.seeking_description} genres:{self.genres} >' 
-
-class Artist(db.Model):
-    __tablename__ = 'Artist'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    genres = db.Column(db.ARRAY(db.String))
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
-
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
-    seeking_venue = db.Column(db.Boolean, default=False)
-    seeking_description = db.Column(db.String(120))
-    website = db.Column(db.String(120))
-    shows = db.relationship('Show', backref='Artist', lazy=True)
-
-    def __repr__(self):
-        return f'<Artist{self.id} name:{self.name} city:{self.city} state:{self.state} phone:{self.phone}\
-         genres:{self.genres} image_link{self.image_link}facebook_link:{self.facebook_link}\
-         seeking_venue{self.seeking_venue} seeking_description{self.seeking_description} website{self.website} >'
-    
-
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
-class Show(db.Model):
-    __tablename__ = 'Show'
-
-    id = db.Column(db.Integer, primary_key=True)
-    venue_id = db.Column(db.Integer, db.ForeignKey(Venue.id), nullable=False)
-    artist_id = db.Column(db.Integer, db.ForeignKey(Artist.id), nullable=False)
-    start_time = db.Column(db.DateTime, nullable=False,
-                           default=datetime.utcnow)
-
-    def __repr__(self):
-        return f'<Show:{self.id},Artist:{self.artist_id} Venue:{self.venue_id} start_time{self.start_time}>'
+#  in models.py
+# from models import *
 
 #----------Filters---------- #
 
@@ -165,7 +108,7 @@ def create_venue_submission():
             website=request.form['website'],
             facebook_link=request.form['facebook_link'],
             image_link=request.form['image_link'],
-            seeking_talent= True  if 'seeking_talent' in request.form else False ,
+            seeking_talent= True  if 'seeking_talent' in request.form else False,
             seeking_description=request.form['seeking_description']
         )
         db.session.add(new_venue)
@@ -275,7 +218,7 @@ def edit_venue_submission(venue_id):
         venue.website=request.form['website']
         venue.facebook_link=request.form['facebook_link']
         venue.image_link=request.form['image_link']
-        venue.seeking_talent= True  if 'seeking_talent' in request.form else False 
+        venue.seeking_talent= True  if 'seeking_talent' in request.form else False
         venue.seeking_description=request.form['seeking_description']
         db.session.commit()
     except: 
@@ -360,7 +303,7 @@ def create_artist_submission():
             genres=request.form.getlist('genres'),
             facebook_link=request.form['facebook_link'],
             website=request.form['website'],
-            seeking_venue= True  if 'seeking_talent' in request.form else False,
+            seeking_venue= True if 'seeking_talent' in request.form else False,
             seeking_description= request.form['seeking_description']
         )
         db.session.add(new_artist)
@@ -466,7 +409,7 @@ def edit_artist_submission(artist_id):
         artist.image_link = request.form['image_link']
         artist.facebook_link = request.form['facebook_link']
         artist.website = request.form['website']
-        artist.seeking_venue = True  if 'seeking_talent' in request.form else False
+        artist.seeking_venue = True if 'seeking_talent' in request.form else False
         artist.seeking_description = request.form['seeking_description']
         db.session.commit()
     except: 
